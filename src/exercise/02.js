@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 
-function useLocalStorageState(keyName, defaultValue) {
+function useLocalStorageState(keyName, defaultValue = '') {
   if (typeof keyName === 'undefined') {
     throw new Error('You must specify a key name')
   }
