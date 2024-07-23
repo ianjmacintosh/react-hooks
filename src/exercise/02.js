@@ -3,16 +3,18 @@
 
 import * as React from 'react'
 
-function useLocalStorageState(keyName, defaultValue = '') {
+function useLocalStorageState(keyName, defaultValue = {}) {
   if (typeof keyName === 'undefined') {
     throw new Error('You must specify a key name')
   }
-  const [value, setValue] = React.useState(
-    () => window.localStorage.getItem(keyName) ?? defaultValue,
+  const [value, setValue] = React.useState(() =>
+    window.localStorage.getItem(keyName)
+      ? JSON.parse(window.localStorage.getItem(keyName)).value
+      : defaultValue,
   )
 
   React.useEffect(() => {
-    window.localStorage.setItem(keyName, value)
+    window.localStorage.setItem(keyName, JSON.stringify({value: value}))
   }, [keyName, value])
 
   return [value, setValue]
