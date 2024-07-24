@@ -6,7 +6,9 @@ import {useLocalStorageState} from '../utils'
 
 function Board() {
   const EMPTY_BOARD = Array(9).fill(null)
-  const [squares, setSquares] = useLocalStorageState('squares', EMPTY_BOARD)
+  const [boards, setBoards] = useLocalStorageState('boards', [EMPTY_BOARD])
+
+  let squares = getLastBoard(boards)
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -34,20 +36,24 @@ function Board() {
     //
     // 🐨 make a copy of the squares array
     // 💰 `[...squares]` will do it!)
-    let squaresCopy = [...squares]
+    let boardsCopy = [...boards]
 
+    squares[square] = nextValue
     //
     // 🐨 set the value of the square that was selected
     // 💰 `squaresCopy[square] = nextValue`
 
-    squaresCopy[square] = nextValue
+    boardsCopy.push(squares)
     //
     // 🐨 set the squares to your copy
-    setSquares(squaresCopy)
+    setBoards(boardsCopy)
   }
 
   function restart() {
-    setSquares(EMPTY_BOARD)
+    squares = EMPTY_BOARD
+    let boardsCopy = [squares]
+
+    setBoards(boardsCopy)
   }
 
   function renderSquare(i) {
@@ -129,6 +135,10 @@ function calculateWinner(squares) {
     }
   }
   return null
+}
+
+function getLastBoard(squares) {
+  return squares[squares.length - 1]
 }
 
 function App() {
