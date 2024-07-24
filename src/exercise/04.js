@@ -50,12 +50,19 @@ function Board({squares, handleMove}) {
   )
 }
 
-function History({boards}) {
+function History({boards, move, setMove}) {
   return (
     <ol>
       {boards.map((board, i) => (
         <li key={JSON.stringify(boards[i])}>
-          <button>Go to move #{i}</button>
+          <button
+            disabled={i === move}
+            onClick={() => {
+              setMove(i)
+            }}
+          >
+            Go to move #{i} {i === move ? '(Current)' : ''}
+          </button>
         </li>
       ))}
     </ol>
@@ -65,25 +72,42 @@ function History({boards}) {
 function Game() {
   const EMPTY_BOARD = Array(9).fill(null)
   const [boards, setBoards] = useLocalStorageState('boards', [EMPTY_BOARD])
-  const squares = boards[boards.length - 1]
+  const [move, setMove] = useLocalStorageState('move', 0)
+  const squares = boards[move]
 
   function restart() {
     let boardsCopy = [EMPTY_BOARD]
+    let newMove = 0
+
+    setMove(newMove)
     setBoards(boardsCopy)
   }
 
   function handleMove(newBoard) {
     let boardsCopy = [...boards]
+
+    console.log(
+      `Authoring move #${move + 1} when ${
+        boards.length - 1
+      } moves have been recorded`,
+    )
+    if (boards.length - 1 > move + 1) {
+      boardsCopy = boardsCopy.slice(0, move + 1)
+    }
+
     boardsCopy.push(newBoard)
 
+    let newMove = move + 1
+
     setBoards(boardsCopy)
+    setMove(newMove)
   }
 
   return (
     <div className="game">
       <div className="game-board">
         <Board squares={squares} handleMove={handleMove} />
-        <History boards={boards}></History>
+        <History boards={boards} move={move} setMove={setMove}></History>
         <button className="restart" onClick={restart}>
           restart
         </button>
