@@ -4,11 +4,8 @@
 import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
-function Board() {
-  const EMPTY_BOARD = Array(9).fill(null)
-  const [boards, setBoards] = useLocalStorageState('boards', [EMPTY_BOARD])
-
-  let squares = getLastBoard(boards)
+function Board({boards, handleBoardUpdate, activeTurn}) {
+  let squares = boards[boards.length - 1]
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -36,24 +33,11 @@ function Board() {
     //
     // 🐨 make a copy of the squares array
     // 💰 `[...squares]` will do it!)
-    let boardsCopy = [...boards]
+    const squaresCopy = [...squares]
+    squaresCopy[square] = nextValue
 
-    squares[square] = nextValue
-    //
-    // 🐨 set the value of the square that was selected
-    // 💰 `squaresCopy[square] = nextValue`
-
-    boardsCopy.push(squares)
-    //
     // 🐨 set the squares to your copy
-    setBoards(boardsCopy)
-  }
-
-  function restart() {
-    squares = EMPTY_BOARD
-    let boardsCopy = [squares]
-
-    setBoards(boardsCopy)
+    handleBoardUpdate(squaresCopy)
   }
 
   function renderSquare(i) {
@@ -83,18 +67,47 @@ function Board() {
         {renderSquare(7)}
         {renderSquare(8)}
       </div>
-      <button className="restart" onClick={restart}>
-        restart
-      </button>
     </div>
   )
 }
 
+function History({boards}) {
+  return (
+    <ol>
+      {boards.map((board, i) => (
+        <li key={JSON.stringify(boards[i])}>
+          <button>Go to move #{i}</button>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 function Game() {
+  const EMPTY_BOARD = Array(9).fill(null)
+  const [boards, setBoards] = useLocalStorageState('boards', [EMPTY_BOARD])
+
+  function restart() {
+    let boardsCopy = [EMPTY_BOARD]
+
+    setBoards(boardsCopy)
+  }
+
+  function addNewBoard(newBoard) {
+    let boardsCopy = [...boards]
+    boardsCopy.push(newBoard)
+
+    setBoards(boardsCopy)
+  }
+
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board boards={boards} handleBoardUpdate={addNewBoard} />
+        <History boards={boards}></History>
+        <button className="restart" onClick={restart}>
+          restart
+        </button>
       </div>
     </div>
   )
@@ -135,10 +148,6 @@ function calculateWinner(squares) {
     }
   }
   return null
-}
-
-function getLastBoard(squares) {
-  return squares[squares.length - 1]
 }
 
 function App() {
