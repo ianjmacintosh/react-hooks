@@ -3,9 +3,21 @@
 
 import * as React from 'react'
 
+function useLocalStorageForState(key, defaultValue = '') {
+  const [value, setValue] = React.useState(
+    JSON.parse(window.localStorage.getItem(key)) ?? defaultValue,
+  )
+
+  React.useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value))
+  }, [key, value])
+
+  return [value, setValue]
+}
+
 function Board() {
   const EMPTY_BOARD = Array(9).fill(null)
-  const [squares, setSquares] = React.useState(EMPTY_BOARD)
+  const [squares, setSquares] = useLocalStorageForState('squares', EMPTY_BOARD)
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
