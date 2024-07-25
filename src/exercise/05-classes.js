@@ -25,7 +25,7 @@ function Tilt({children}) {
     return function cleanup() {
       tiltNode.vanillaTilt.destroy()
     }
-  })
+  }, [])
 
   return (
     <div ref={tiltRef} className="tilt-root">
