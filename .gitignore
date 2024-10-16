@@ -6,10 +6,15 @@ workspace/
 **/public/build
 **/playwright-report
 data.db
-/playground
 **/tsconfig.tsbuildinfo
 
 # in a real app you'd want to not commit the .env
 # file as well, but since this is for a workshop
 # we're going to keep them around.
 # .env
+
+# I want to track my progress through exercises,
+# so I'm going to track the /playground dir. This
+# is not out-of-the-box recommended but certainly
+# doesn't seem risky
+# /playground
