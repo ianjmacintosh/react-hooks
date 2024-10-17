@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { generateGradient, getMatchingPosts } from '#shared/blog-posts'
 
 function App() {
-	// 🐨 call useState here and initialize the query with an empty string
-	const [query, setQuery] = useState("")
+	const [query, setQuery] = useState('')
+
+	// 🐨 make a function called handleCheck that accepts a "tag" string and a "checked" boolean
+	// 🐨 By calling setQuery, add the tag to the query if checked and remove it if not
 
 	return (
 		<div className="app">
@@ -15,25 +17,35 @@ function App() {
 						id="searchInput"
 						name="query"
 						type="search"
-						// 🐨 add an onChange handler here that calls setQuery with the event.currentTarget.value
-						onChange={event => setQuery(event.currentTarget.value)}
-
+						// 🐨 set the value prop to query
+						onChange={e => setQuery(e.currentTarget.value)}
 					/>
 				</div>
 				<div>
 					<label>
-						<input type="checkbox" /> 🐶 dog
+						<input
+							type="checkbox"
+							// 🐨 add an onChange to call handleCheck with dog and event.currentTarget.checked
+						/>{' '}
+						🐶 dog
 					</label>
 					<label>
-						<input type="checkbox" /> 🐱 cat
+						<input
+							type="checkbox"
+							// 🐨 add an onChange to call handleCheck with cat and event.currentTarget.checked
+						/>{' '}
+						🐱 cat
 					</label>
 					<label>
-						<input type="checkbox" /> 🐛 caterpillar
+						<input
+							type="checkbox"
+							// 🐨 add an onChange to call handleCheck with caterpillar and event.currentTarget.checked
+						/>{' '}
+						🐛 caterpillar
 					</label>
 				</div>
 				<button type="submit">Submit</button>
 			</form>
-			{/* 🐨 pass the query state as a prop */}
 			<MatchingPosts query={query} />
 		</div>
 	)
