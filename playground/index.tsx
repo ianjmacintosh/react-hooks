@@ -7,6 +7,23 @@ function App() {
 
 	// 🐨 make a function called handleCheck that accepts a "tag" string and a "checked" boolean
 	// 🐨 By calling setQuery, add the tag to the query if checked and remove it if not
+	const handleCheck = (tag: string, checked: boolean) => {
+		if (checked) {
+			// If we're adding the tag to the query, consider if we already have a query
+			if (query) {
+				// If we've already got a query, include a space
+				setQuery(`${query} ${tag}`)
+			} else {
+				// Otherwise, just set the query to the tag
+				setQuery(tag)
+			}
+		} else {
+			// If we're removing the tag from the query, remove " <tag>" and "<tag>" in that order
+			// This is to keep us from adding extra spaces unnecessarily
+			setQuery(query.replace(` ${tag}`, '').replace(tag, ''))
+		}
+
+	}
 
 	return (
 		<div className="app">
@@ -18,6 +35,7 @@ function App() {
 						name="query"
 						type="search"
 						// 🐨 set the value prop to query
+						value={query}
 						onChange={e => setQuery(e.currentTarget.value)}
 					/>
 				</div>
@@ -26,6 +44,9 @@ function App() {
 						<input
 							type="checkbox"
 							// 🐨 add an onChange to call handleCheck with dog and event.currentTarget.checked
+							onChange={event =>
+								handleCheck('dog', event.currentTarget.checked)
+							}
 						/>{' '}
 						🐶 dog
 					</label>
@@ -33,6 +54,9 @@ function App() {
 						<input
 							type="checkbox"
 							// 🐨 add an onChange to call handleCheck with cat and event.currentTarget.checked
+							onChange={event =>
+								handleCheck('cat', event.currentTarget.checked)
+							}
 						/>{' '}
 						🐱 cat
 					</label>
@@ -40,6 +64,9 @@ function App() {
 						<input
 							type="checkbox"
 							// 🐨 add an onChange to call handleCheck with caterpillar and event.currentTarget.checked
+							onChange={event =>
+								handleCheck('caterpillar', event.currentTarget.checked)
+							}
 						/>{' '}
 						🐛 caterpillar
 					</label>
