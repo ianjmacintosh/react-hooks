@@ -4,6 +4,7 @@ import { generateGradient, getMatchingPosts } from '#shared/blog-posts'
 
 // 🐨 make a function here called getQueryParam
 const getQueryParam = () => {
+	console.log("Drum")
 	const params = new URLSearchParams(window.location.search)
 	const initialQuery = params.get('query') ?? ''
 
@@ -11,7 +12,7 @@ const getQueryParam = () => {
 }
 
 function App() {
-	const [query, setQuery] = useState(getQueryParam)
+	const [query, setQuery] = useState(getQueryParam())
 	const words = query.split(' ')
 
 	const dogChecked = words.includes('dog')
