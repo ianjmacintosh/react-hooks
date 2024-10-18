@@ -4,25 +4,18 @@ import { generateGradient, getMatchingPosts } from '#shared/blog-posts'
 
 function App() {
 	const [query, setQuery] = useState('')
+	// 🐨 move the words variable from handleCheck to here
+	// 🦉 this is deriving state!
 
-	// 🐨 make a function called handleCheck that accepts a "tag" string and a "checked" boolean
-	// 🐨 By calling setQuery, add the tag to the query if checked and remove it if not
-	const handleCheck = (tag: string, checked: boolean) => {
-		if (checked) {
-			// If we're adding the tag to the query, consider if we already have a query
-			if (query) {
-				// If we've already got a query, include a space
-				setQuery(`${query} ${tag}`)
-			} else {
-				// Otherwise, just set the query to the tag
-				setQuery(tag)
-			}
-		} else {
-			// If we're removing the tag from the query, remove " <tag>" and "<tag>" in that order
-			// This is to keep us from adding extra spaces unnecessarily
-			setQuery(query.replace(` ${tag}`, '').replace(tag, ''))
-		}
+	// 🐨 create a dogChecked variable that is whether words includes "dog"
+	// and do the same for "cat" and "caterpillar"
+	// 🦉 this is deriving state from derived state!
 
+	function handleCheck(tag: string, checked: boolean) {
+		// 🐨 move the words variable up to just below the useState call
+		const words = query.split(' ')
+		const newWords = checked ? [...words, tag] : words.filter(w => w !== tag)
+		setQuery(newWords.filter(Boolean).join(' ').trim())
 	}
 
 	return (
@@ -34,7 +27,6 @@ function App() {
 						id="searchInput"
 						name="query"
 						type="search"
-						// 🐨 set the value prop to query
 						value={query}
 						onChange={e => setQuery(e.currentTarget.value)}
 					/>
@@ -43,29 +35,25 @@ function App() {
 					<label>
 						<input
 							type="checkbox"
-							// 🐨 add an onChange to call handleCheck with dog and event.currentTarget.checked
-							onChange={event =>
-								handleCheck('dog', event.currentTarget.checked)
-							}
+							// 🐨 control the checked state of this checkbox by setting the checked prop
+							onChange={e => handleCheck('dog', e.currentTarget.checked)}
 						/>{' '}
 						🐶 dog
 					</label>
 					<label>
 						<input
 							type="checkbox"
-							// 🐨 add an onChange to call handleCheck with cat and event.currentTarget.checked
-							onChange={event =>
-								handleCheck('cat', event.currentTarget.checked)
-							}
+							// 🐨 control the checked state of this checkbox by setting the checked prop
+							onChange={e => handleCheck('cat', e.currentTarget.checked)}
 						/>{' '}
 						🐱 cat
 					</label>
 					<label>
 						<input
 							type="checkbox"
-							// 🐨 add an onChange to call handleCheck with caterpillar and event.currentTarget.checked
-							onChange={event =>
-								handleCheck('caterpillar', event.currentTarget.checked)
+							// 🐨 control the checked state of this checkbox by setting the checked prop
+							onChange={e =>
+								handleCheck('caterpillar', e.currentTarget.checked)
 							}
 						/>{' '}
 						🐛 caterpillar
