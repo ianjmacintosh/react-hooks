@@ -17,16 +17,23 @@ function App() {
 	const catChecked = words.includes('cat')
 	const caterpillarChecked = words.includes('caterpillar')
 
-	// 🐨 add a useEffect(() => {}, []) call here (we'll talk about that empty array later)
 	useEffect(() => {
+		// 🚨 we use this to test whether your cleanup is working
+		const hugeData = new Array(1_000_000).fill(
+			new Array(1_000_000).fill('🐶🐱🐛'),
+		)
+
+		// 🐨 extract your event handler here into a function called updateQuery
 		window.addEventListener('popstate', () => {
+			// 🚨 this console.log forces the hugeData to hang around as long as the event listener is active
+			console.log(hugeData)
+
+			console.log('popstate event listener called')
 			setQuery(getQueryParam())
 		})
+		// 🐨 return a function which removes the popstate event listener
+		// 📜 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
 	}, [])
-	// 🐨 in the useEffect callback, subscribe to window's popstate event
-	// 🦉 if that doesn't make sense to you... don't worry, it's supposed to be broken! We'll fix it next
-	// 🐨 your event handler should call setQuery to getQueryParam()
-	// 📜 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
 
 	function handleCheck(tag: string, checked: boolean) {
 		const newWords = checked ? [...words, tag] : words.filter(w => w !== tag)
@@ -108,6 +115,24 @@ function MatchingPosts({ query }: { query: string }) {
 	)
 }
 
+function DemoApp() {
+	const [showForm, setShowForm] = useState(true)
+
+	return (
+		<div>
+			<label>
+				<input
+					type="checkbox"
+					checked={showForm}
+					onChange={e => setShowForm(e.currentTarget.checked)}
+				/>{' '}
+				show form
+			</label>
+			{showForm ? <App /> : null}
+		</div>
+	)
+}
+
 const rootEl = document.createElement('div')
 document.body.append(rootEl)
-createRoot(rootEl).render(<App />)
+createRoot(rootEl).render(<DemoApp />)
