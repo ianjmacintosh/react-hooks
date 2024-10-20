@@ -14,6 +14,7 @@ function getQueryParam() {
 
 function App() {
 	const [query, setQuery] = useState(getQueryParam)
+
 	useEffect(() => {
 		const updateQuery = () => setQuery(getQueryParam())
 		window.addEventListener('popstate', updateQuery)
@@ -21,25 +22,27 @@ function App() {
 			window.removeEventListener('popstate', updateQuery)
 		}
 	}, [])
+
 	return (
 		<div className="app">
-			{/* 🐨 pass the query and setQuery to the form */}
 			<Form query={query} setQuery={setQuery} />
-			{/* 🐨 pass the query to this prop */}
 			<MatchingPosts query={query} />
 		</div>
 	)
 }
 
-// 🐨 update the Form props to accept query and setQuery
-function Form({query, setQuery}: {query: string, setQuery: (query: string) => void}) {
-
+function Form({
+	query,
+	setQuery,
+}: {
+	query: string
+	setQuery: (query: string) => void
+}) {
 	const words = query.split(' ').map(w => w.trim())
 
 	const dogChecked = words.includes('dog')
 	const catChecked = words.includes('cat')
 	const caterpillarChecked = words.includes('caterpillar')
-
 
 	function handleCheck(tag: string, checked: boolean) {
 		const newWords = checked ? [...words, tag] : words.filter(w => w !== tag)
@@ -91,30 +94,47 @@ function Form({query, setQuery}: {query: string, setQuery: (query: string) => vo
 
 function MatchingPosts({ query }: { query: string }) {
 	const matchingPosts = getMatchingPosts(query)
+	// 🐨 lift the favorite state from the Card component to here
 
 	return (
 		<ul className="post-list">
 			{matchingPosts
-				.sort((a, b) => a.title.localeCompare(b.title))
+				.sort((a, b) => {
+					// 🐨 determine whether post a and b are included in favorites
+					const aFav = false // 💰 favorites.includes(a.id)
+					const bFav = false // 💰 favorites.includes(b.id)
+					return aFav === bFav ? 0 : aFav ? -1 : 1
+				})
 				.map(post => (
-					<Card key={post.id} post={post} />
+					<Card
+						key={post.id}
+						post={post}
+						// 🐨 pass an isFavorited prop
+						// 🐨 pass an onFavoriteClick that accepts a "favorite" boolean
+						//   if it's true, then add the post.id to the favorites
+						//   if it's false, then remove the post.id from the favorites
+					/>
 				))}
 		</ul>
 	)
 }
 
+// 🐨 add props for isFavorited and onFavoriteClick
 function Card({ post }: { post: BlogPost }) {
+	// 🐨 lift this up to MatchingPosts
 	const [isFavorited, setIsFavorited] = useState(false)
 	return (
 		<li>
 			{isFavorited ? (
 				<button
 					aria-label="Remove favorite"
+					// 🐨 call onFavoriteClick
 					onClick={() => setIsFavorited(false)}
 				>
 					❤️
 				</button>
 			) : (
+				// 🐨 call onFavoriteClick
 				<button aria-label="Add favorite" onClick={() => setIsFavorited(true)}>
 					🤍
 				</button>
