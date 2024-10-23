@@ -35,7 +35,7 @@ function Tilt({
 		VanillaTilt.init(tiltNode, vanillaTiltOptions)
 		return () => tiltNode.vanillaTilt?.destroy()
 		// 🐨 instead of passing the options object here, pass each primitive option
-	}, [vanillaTiltOptions])
+	}, [vanillaTiltOptions.max, vanillaTiltOptions.speed, vanillaTiltOptions.glare, vanillaTiltOptions['max-glare']])
 
 	return (
 		<div ref={tiltRef} className="tilt-root">
