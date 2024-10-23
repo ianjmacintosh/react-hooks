@@ -20,6 +20,8 @@ function Tilt({
 	maxGlare?: number
 }) {
 	const tiltRef = useRef<HTMLVanillaTiltElement>(null)
+
+	// 🐨 move this into the useEffect directly
 	const vanillaTiltOptions = {
 		max,
 		speed,
@@ -27,22 +29,16 @@ function Tilt({
 		'max-glare': maxGlare,
 	}
 
-	// 🐨 create a useEffect callback here and refactor things to move the contents
-	// of the ref callback to here.
 	useEffect(() => {
-		if (!tiltRef.current) return
-		VanillaTilt.init(tiltRef.current, vanillaTiltOptions)
-		return () => tiltRef.current?.vanillaTilt?.destroy()
+		const { current: tiltNode } = tiltRef
+		if (!tiltNode) return
+		VanillaTilt.init(tiltNode, vanillaTiltOptions)
+		return () => tiltNode.vanillaTilt?.destroy()
+		// 🐨 instead of passing the options object here, pass each primitive option
 	}, [vanillaTiltOptions])
-	// 💰 You'll get the tiltNode from tiltRef.current
-	// 💰 you'll want to keep the early return if the tiltNode is null
-	// 💰 make sure to include the vanillaTiltOptions object in the dependency array
 
 	return (
-		<div
-			className="tilt-root"
-			ref={tiltRef}
-		>
+		<div ref={tiltRef} className="tilt-root">
 			<div className="tilt-child">{children}</div>
 		</div>
 	)
@@ -119,7 +115,7 @@ const rootEl = document.createElement('div')
 document.body.append(rootEl)
 createRoot(rootEl).render(<App />)
 
-// 🤫 we'll fix this in the next step!
+// 🤫 we'll fix this in this step!
 // (ALMOST) NEVER DISABLE THIS LINT RULE IN REAL LIFE!
 /*
 eslint
